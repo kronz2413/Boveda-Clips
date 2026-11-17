@@ -138,7 +138,17 @@
       if (r.error) throw r.error;
       S.items = (r.data || []).filter(function (x) { return EXT_OF[x.type]; }).map(toItem);
       S.ready = true; S.failed = false; applyAccess(); refresh();
-    }).catch(function () { S.failed = true; S.ready = true; applyAccess(); refresh(); });
+    }).catch(function (e) { S.failed = true; S.failMsg = loadErrMsg(e); S.ready = true; applyAccess(); refresh(); });
+  }
+  function loadErrMsg(e) {
+    var msg = String((e && e.message) || ''), code = String((e && e.code) || '');
+    if (code === 'PGRST205' || code === '42P01' || /could not find the table|does not exist|schema cache/i.test(msg))
+      return 'Falta crear la tabla «media» en Supabase. Ejecuta el archivo supabase/setup.sql en el SQL Editor de tu proyecto y recarga.';
+    if (/invalid api key|invalid jwt|apikey|unauthorized/i.test(msg) || (e && e.status === 401))
+      return 'La clave de config.js no es válida. Copia la Publishable key desde Settings → API Keys en Supabase.';
+    if (/fetch|network|load failed/i.test(msg))
+      return 'No se pudo llegar a Supabase. Revisa que la URL de config.js sea correcta y que el proyecto no esté pausado.';
+    return 'No se pudo leer la bóveda' + (code || msg ? ' (' + (code ? code + ': ' : '') + msg.slice(0, 120) + ')' : '') + '.';
   }
   var loadTimer = null;
   function loadSoon() { clearTimeout(loadTimer); loadTimer = setTimeout(load, 250); }
@@ -435,7 +445,7 @@
     $('pick').disabled = !ok;
     var msg = '';
     if (!S.configured) msg = 'Falta configurar Supabase. Abre config.js y pega la URL y la anon key de tu proyecto (mira el README).';
-    else if (S.failed) msg = 'No se pudo conectar con la bóveda. Revisa tu conexión y recarga la página.';
+    else if (S.failed) msg = S.failMsg || 'No se pudo conectar con la bóveda. Revisa tu conexión y recarga la página.';
     else if (S.authFailed) msg = 'Puedes ver y descargar archivos, pero no se pudo iniciar la sesión para subir. Activa «Allow anonymous sign-ins» en Supabase (Authentication → Sign In / Providers).';
     notice.textContent = msg; notice.hidden = !msg;
   }

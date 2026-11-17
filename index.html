@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bóveda de Clips</title>
+<meta name="description" content="Galería compartida para subir, ver, descargar y eliminar videos e imágenes en su calidad original.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="brand"><span class="tally" aria-hidden="true"></span><span class="brand-name">Bóveda</span></div>
+    <div class="stats mono" id="stats" aria-live="polite">Conectando…</div>
+  </header>
+
+  <section class="hero">
+    <h1>Tus clips, tal como los grabaste.</h1>
+    <p class="lede">Sube videos e imágenes, deja que otros suban los suyos y descarga cualquier archivo exactamente como se subió. La página no convierte ni recomprime nada.</p>
+  </section>
+
+  <section class="drop off" id="drop" aria-label="Zona para subir archivos">
+    <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+    <p class="drop-title">Suelta tus archivos aquí</p>
+    <button class="btn primary" id="pick" type="button" disabled>
+      <span data-icon="up"></span>Elegir archivos
+    </button>
+    <div class="chips" aria-label="Formatos admitidos">
+      <span class="chip">MP4</span><span class="chip">WEBM</span><span class="chip">MOV</span><span class="chip">PNG</span><span class="chip">JPG</span><span class="chip">WEBP</span><span class="chip">GIF</span>
+    </div>
+    <p class="fine">Hasta <span id="limit">50</span> MB por archivo. Puedes subir varios a la vez.</p>
+    <label class="who">Tu nombre (opcional) <input id="who-in" type="text" maxlength="40" placeholder="Visitante" autocomplete="nickname"></label>
+    <input type="file" id="file-in" multiple accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm,video/quicktime" hidden>
+  </section>
+
+  <ul class="queue" id="queue" hidden></ul>
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="bar" aria-label="Filtros">
+    <div class="seg" role="group" aria-label="Filtrar por tipo">
+      <button type="button" data-f="all" aria-pressed="true">Todo</button>
+      <button type="button" data-f="video" aria-pressed="false">Videos</button>
+      <button type="button" data-f="image" aria-pressed="false">Imágenes</button>
+      <button type="button" data-f="mine" aria-pressed="false">Míos</button>
+    </div>
+    <div class="count mono" id="count"></div>
+  </section>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>
+    <strong>Todavía no hay clips</strong>
+    <span>Arrastra el primero a la zona de arriba. Aparecerá aquí para todos los que abran esta página.</span>
+  </div>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Vista del archivo">
+  <div class="lb-card">
+    <div class="lb-stage" id="lbStage"></div>
+    <aside class="lb-side">
+      <div class="lb-head">
+        <h2 id="lbName"></h2>
+        <button class="btn ghost icon-only" id="lbClose" type="button" aria-label="Cerrar"><span data-icon="x"></span></button>
+      </div>
+      <dl class="facts" id="lbFacts"></dl>
+      <div id="lbActions"></div>
+      <div class="lb-nav">
+        <button class="btn ghost" id="lbPrev" type="button">Anterior</button>
+        <button class="btn ghost" id="lbNext" type="button">Siguiente</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
